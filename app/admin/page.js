@@ -15,8 +15,7 @@ export default function AdminDashboard() {
       const res = await fetch('/api/admin/rsvps', { cache: 'no-store' });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = await res.json();
-      const list = Array.isArray(data?.rsvps) ? data.rsvps : [];
-      setRsvps(list);
+      setRsvps(Array.isArray(data?.rsvps) ? data.rsvps : []);
     } catch (e) {
       setError(e?.message || 'Failed to fetch RSVPs');
     } finally {
@@ -52,7 +51,7 @@ export default function AdminDashboard() {
   return (
     <main className={styles.wrap}>
       <header className={styles.header}>
-        <h1>RSVP Admin</h1>
+        <h1 className={styles.title}>RSVP Admin</h1>
         <button className={styles.button} onClick={fetchRSVPs} disabled={loading}>
           {loading ? 'Loading…' : 'Reload'}
         </button>
