@@ -167,7 +167,7 @@ export default function RSVPPage() {
 
   return (
     <>
-      <style jsx>{`
+      <style jsx global>{`
         * {
           margin: 0;
           padding: 0;
