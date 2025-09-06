@@ -51,132 +51,8 @@ export default function AdminDashboard() {
           <div className="loading-spinner"></div>
           <p>RSVPs laden...</p>
         </div>
-        <style jsx global>{getStyles()}</style>
-      </div>
-    )
-  }
-
-  if (error) {
-    return (
-      <div className="dashboard-container">
-        <div className="error-card">
-          <h2>❌ Fout</h2>
-          <p>{error}</p>
-          <button onClick={fetchRSVPs} className="retry-btn">
-            🔄 Opnieuw proberen
-          </button>
-        </div>
-        <style jsx global>{getStyles()}</style>
-      </div>
-    )
-  }
-
-  return (
-    <div className="dashboard-container">
-      {/* Header */}
-      <div className="header">
-        <h1>🍼 Matteo's Kraamfeestje Dashboard</h1>
-        <p className="subtitle">RSVP Overzicht - Zaterdag 20.09.2025</p>
-        <button onClick={fetchRSVPs} className="refresh-btn">
-          🔄 Vernieuwen
-        </button>
-      </div>
-
-      {/* Stats Cards */}
-      <div className="stats-grid">
-        <div className="stat-card total">
-          <div className="stat-icon">👥</div>
-          <div className="stat-info">
-            <h3>{stats.total}</h3>
-            <p>Total Responses</p>
-          </div>
-        </div>
-        
-        <div className="stat-card yes">
-          <div className="stat-icon">🎉</div>
-          <div className="stat-info">
-            <h3>{stats.yes}</h3>
-            <p>Komen wel</p>
-          </div>
-        </div>
-        
-        <div className="stat-card no">
-          <div className="stat-icon">😔</div>
-          <div className="stat-info">
-            <h3>{stats.no}</h3>
-            <p>Komen niet</p>
-          </div>
-        </div>
-      </div>
-
-      {/* Progress Bar */}
-      {stats.total > 0 && (
-        <div className="progress-section">
-          <div className="progress-bar">
-            <div 
-              className="progress-fill yes-fill" 
-              style={{ width: `${(stats.yes / stats.total) * 100}%` }}
-            ></div>
-            <div 
-              className="progress-fill no-fill" 
-              style={{ width: `${(stats.no / stats.total) * 100}%`, left: `${(stats.yes / stats.total) * 100}%` }}
-            ></div>
-          </div>
-          <div className="progress-labels">
-            <span className="yes-label">{stats.yes > 0 && `${Math.round((stats.yes / stats.total) * 100)}% Ja`}</span>
-            <span className="no-label">{stats.no > 0 && `${Math.round((stats.no / stats.total) * 100)}% Nee`}</span>
-          </div>
-        </div>
-      )}
-
-      {/* RSVP List */}
-      <div className="rsvp-section">
-        <h2>📋 Alle Responses ({stats.total})</h2>
-        
-        {rsvps.length === 0 ? (
-          <div className="empty-state">
-            <div className="empty-icon">📭</div>
-            <h3>Nog geen responses</h3>
-            <p>Zodra mensen hun RSVP indienen, verschijnen ze hier!</p>
-          </div>
-        ) : (
-          <div className="rsvp-grid">
-            {rsvps.map((rsvp, index) => (
-              <div 
-                key={rsvp.id || index} 
-                className={`rsvp-card ${rsvp.response.toLowerCase()}`}
-              >
-                <div className="rsvp-header">
-                  <div className="response-badge">
-                    {rsvp.response === 'Ja' ? '🎉' : '😔'} {rsvp.response}
-                  </div>
-                  <div className="timestamp">
-                    {formatDate(rsvp.timestamp)}
-                  </div>
-                </div>
-                <div className="rsvp-name">
-                  {rsvp.name}
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-
-      {/* Footer */}
-      <div className="footer">
-        <p>💕 Made with love for Matteo's special day</p>
-        <p>Derck, Marie & baby Matteo | +31653283572</p>
-      </div>
-
-      <style jsx global>{getStyles()}</style>
-    </div>
-  )
-}
-
-function getStyles() {
-  return `
-    * {
+        <style jsx global>{`
+* {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
@@ -519,5 +395,125 @@ function getStyles() {
         gap: 10px;
       }
     }
-  `
+`}</style>
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="dashboard-container">
+        <div className="error-card">
+          <h2>❌ Fout</h2>
+          <p>{error}</p>
+          <button onClick={fetchRSVPs} className="retry-btn">
+            🔄 Opnieuw proberen
+          </button>
+        </div>
+        <style jsx global>{getStyles()}</style>
+      </div>
+    )
+  }
+
+  return (
+    <div className="dashboard-container">
+      {/* Header */}
+      <div className="header">
+        <h1>🍼 Matteo's Kraamfeestje Dashboard</h1>
+        <p className="subtitle">RSVP Overzicht - Zaterdag 20.09.2025</p>
+        <button onClick={fetchRSVPs} className="refresh-btn">
+          🔄 Vernieuwen
+        </button>
+      </div>
+
+      {/* Stats Cards */}
+      <div className="stats-grid">
+        <div className="stat-card total">
+          <div className="stat-icon">👥</div>
+          <div className="stat-info">
+            <h3>{stats.total}</h3>
+            <p>Total Responses</p>
+          </div>
+        </div>
+        
+        <div className="stat-card yes">
+          <div className="stat-icon">🎉</div>
+          <div className="stat-info">
+            <h3>{stats.yes}</h3>
+            <p>Komen wel</p>
+          </div>
+        </div>
+        
+        <div className="stat-card no">
+          <div className="stat-icon">😔</div>
+          <div className="stat-info">
+            <h3>{stats.no}</h3>
+            <p>Komen niet</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Progress Bar */}
+      {stats.total > 0 && (
+        <div className="progress-section">
+          <div className="progress-bar">
+            <div 
+              className="progress-fill yes-fill" 
+              style={{ width: `${(stats.yes / stats.total) * 100}%` }}
+            ></div>
+            <div 
+              className="progress-fill no-fill" 
+              style={{ width: `${(stats.no / stats.total) * 100}%`, left: `${(stats.yes / stats.total) * 100}%` }}
+            ></div>
+          </div>
+          <div className="progress-labels">
+            <span className="yes-label">{stats.yes > 0 && `${Math.round((stats.yes / stats.total) * 100)}% Ja`}</span>
+            <span className="no-label">{stats.no > 0 && `${Math.round((stats.no / stats.total) * 100)}% Nee`}</span>
+          </div>
+        </div>
+      )}
+
+      {/* RSVP List */}
+      <div className="rsvp-section">
+        <h2>📋 Alle Responses ({stats.total})</h2>
+        
+        {rsvps.length === 0 ? (
+          <div className="empty-state">
+            <div className="empty-icon">📭</div>
+            <h3>Nog geen responses</h3>
+            <p>Zodra mensen hun RSVP indienen, verschijnen ze hier!</p>
+          </div>
+        ) : (
+          <div className="rsvp-grid">
+            {rsvps.map((rsvp, index) => (
+              <div 
+                key={rsvp.id || index} 
+                className={`rsvp-card ${rsvp.response.toLowerCase()}`}
+              >
+                <div className="rsvp-header">
+                  <div className="response-badge">
+                    {rsvp.response === 'Ja' ? '🎉' : '😔'} {rsvp.response}
+                  </div>
+                  <div className="timestamp">
+                    {formatDate(rsvp.timestamp)}
+                  </div>
+                </div>
+                <div className="rsvp-name">
+                  {rsvp.name}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Footer */}
+      <div className="footer">
+        <p>💕 Made with love for Matteo's special day</p>
+        <p>Derck, Marie & baby Matteo | +31653283572</p>
+      </div>
+
+      <style jsx global>{getStyles()}</style>
+    </div>
+  )
 }
