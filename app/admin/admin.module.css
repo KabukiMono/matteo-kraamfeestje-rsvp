@@ -1,4 +1,7 @@
-:root {
+/* CSS Modules must be "pure": no global selectors like :root or bare h1.
+   Variables are scoped to .wrap so they apply to this page only. */
+
+.wrap {
   --bg: #0f172a;
   --card: #111827;
   --muted: #94a3b8;
@@ -6,9 +9,7 @@
   --yes: #22c55e;
   --no: #ef4444;
   --ring: rgba(255, 255, 255, 0.08);
-}
 
-.wrap {
   min-height: 100svh;
   background:
     radial-gradient(1200px 800px at 10% -20%, #1f2937 0%, transparent 50%),
@@ -27,10 +28,11 @@
   margin-bottom: 24px;
 }
 
-h1 {
+.title {
   font-size: 1.75rem;
   font-weight: 800;
   letter-spacing: -0.02em;
+  margin: 0;
 }
 
 .button {
