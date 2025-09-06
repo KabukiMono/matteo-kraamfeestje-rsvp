@@ -1,189 +1,104 @@
-'use client'
+'use client';
 
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react';
+import styles from './admin.module.css';
 
 export default function AdminDashboard() {
-  const [rsvps, setRsvps] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
+  const [rsvps, setRsvps] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   async function fetchRSVPs() {
     try {
-      setLoading(true)
-      setError(null)
-      const res = await fetch('/api/admin/rsvps', { cache: 'no-store' })
-      if (!res.ok) throw new Error(`HTTP ${res.status}`)
-      const data = await res.json()
-      setRsvps(Array.isArray(data?.rsvps) ? data.rsvps : [])
+      setLoading(true);
+      setError(null);
+      const res = await fetch('/api/admin/rsvps', { cache: 'no-store' });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
+      const list = Array.isArray(data?.rsvps) ? data.rsvps : [];
+      setRsvps(list);
     } catch (e) {
-      setError(e?.message || 'Failed to fetch RSVPs')
+      setError(e?.message || 'Failed to fetch RSVPs');
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   }
 
-  useEffect(() => {
-    fetchRSVPs()
-  }, [])
+  useEffect(() => { fetchRSVPs(); }, []);
 
-  // Helpers to interpret “yes/no” regardless of shape
   const isYes = (r) => {
-    if (typeof r?.attending === 'boolean') return r.attending
-    const v = String(r?.response ?? r?.status ?? '').toLowerCase().trim()
-    return ['ja', 'yes', 'y', 'true', '1'].includes(v)
-  }
+    if (typeof r?.attending === 'boolean') return r.attending;
+    const v = String(r?.response ?? r?.status ?? '').toLowerCase().trim();
+    return ['ja', 'yes', 'y', 'true', '1'].includes(v);
+  };
   const isNo = (r) => {
-    if (typeof r?.attending === 'boolean') return !r.attending
-    const v = String(r?.response ?? r?.status ?? '').toLowerCase().trim()
-    return ['nee', 'no', 'n', 'false', '0'].includes(v)
-  }
+    if (typeof r?.attending === 'boolean') return !r.attending;
+    const v = String(r?.response ?? r?.status ?? '').toLowerCase().trim();
+    return ['nee', 'no', 'n', 'false', '0'].includes(v);
+  };
 
   const stats = useMemo(() => {
-    const total = rsvps.length
-    let yes = 0, no = 0
-    for (const r of rsvps) {
-      if (isYes(r)) yes++
-      else if (isNo(r)) no++
-    }
-    return { total, yes, no }
-  }, [rsvps])
+    const total = rsvps.length;
+    let yes = 0, no = 0;
+    for (const r of rsvps) { if (isYes(r)) yes++; else if (isNo(r)) no++; }
+    return { total, yes, no };
+  }, [rsvps]);
+
+  const fmtTime = (r) => {
+    const t = r?.timestamp ?? r?.createdAt ?? r?.created_at ?? r?.date;
+    try { return t ? new Date(t).toLocaleString('nl-NL') : ''; } catch { return String(t ?? ''); }
+  };
 
   return (
-    <main className="admin-wrap">
-      <header className="admin-header">
+    <main className={styles.wrap}>
+      <header className={styles.header}>
         <h1>RSVP Admin</h1>
-        <div className="header-actions">
-          <button onClick={fetchRSVPs}>Reload</button>
-        </div>
+        <button className={styles.button} onClick={fetchRSVPs} disabled={loading}>
+          {loading ? 'Loading…' : 'Reload'}
+        </button>
       </header>
 
-      <section className="stats">
-        <div className="stat">
-          <div className="stat-label">Total</div>
-          <div className="stat-value">{stats.total}</div>
+      <section className={styles.statsRow}>
+        <div className={styles.statCard}>
+          <div className={styles.statLabel}>Total</div>
+          <div className={styles.statValue}>{stats.total}</div>
         </div>
-        <div className="stat yes">
-          <div className="stat-label">Yes</div>
-          <div className="stat-value">{stats.yes}</div>
+        <div className={`${styles.statCard} ${styles.yes}`}>
+          <div className={styles.statLabel}>Yes</div>
+          <div className={styles.statValue}>{stats.yes}</div>
         </div>
-        <div className="stat no">
-          <div className="stat-label">No</div>
-          <div className="stat-value">{stats.no}</div>
+        <div className={`${styles.statCard} ${styles.no}`}>
+          <div className={styles.statLabel}>No</div>
+          <div className={styles.statValue}>{stats.no}</div>
         </div>
       </section>
 
-      {loading && <p className="muted">Loading…</p>}
-      {error && <p className="error">Error: {error}</p>}
+      {error && <p className={styles.error}>Error: {error}</p>}
+      {!error && rsvps.length === 0 && !loading && <p className={styles.muted}>No RSVPs yet.</p>}
 
       {!loading && !error && (
-        <ul className="rsvp-list">
+        <ul className={styles.list}>
           {rsvps.map((r, idx) => {
-            const yes = isYes(r)
-            const no = isNo(r)
+            const yes = isYes(r), no = isNo(r);
+            const name = r.name ?? r.fullname ?? r.firstName ?? r.first_name ?? r.email ?? '—';
+            const badge = yes ? 'Ja' : no ? 'Nee' : String(r.response ?? r.status ?? '—');
             return (
-              <li key={r.id ?? idx} className={`rsvp ${yes ? 'yes' : no ? 'no' : ''}`}>
-                <div className="rsvp-head">
-                  <strong className="name">{r.name || r.fullname || r.firstName || '—'}</strong>
-                  <span className="badge">{yes ? 'Ja' : no ? 'Nee' : (r.response ?? r.status ?? '—')}</span>
+              <li key={r.id ?? idx} className={`${styles.item} ${yes ? styles.itemYes : no ? styles.itemNo : ''}`}>
+                <div className={styles.itemHead}>
+                  <strong className={styles.name}>{name}</strong>
+                  <span className={styles.badge}>{badge}</span>
                 </div>
-                <div className="rsvp-meta">
+                <div className={styles.meta}>
                   {r.email && <span>{r.email}</span>}
                   {r.phone && <span>{r.phone}</span>}
-                  {r.timestamp && (
-                    <span title={r.timestamp}>
-                      {new Date(r.timestamp).toLocaleString?.() || r.timestamp}
-                    </span>
-                  )}
+                  {fmtTime(r) && <span>{fmtTime(r)}</span>}
                 </div>
-                {r.message && <p className="note">{r.message}</p>}
-                {/* Fallback full JSON for debugging */}
-                {!r.name && <pre className="raw">{JSON.stringify(r, null, 2)}</pre>}
+                {r.message && <p className={styles.note}>{r.message}</p>}
               </li>
-            )
+            );
           })}
-          {rsvps.length === 0 && <li className="muted">No RSVPs yet.</li>}
         </ul>
       )}
-
-      {/* IMPORTANT: keep this as a static template literal (no function calls) */}
-      <style jsx global>{`
-        :root {
-          --bg: #0f172a;
-          --card: #111827;
-          --muted: #94a3b8;
-          --text: #e5e7eb;
-          --yes: #22c55e;
-          --no: #ef4444;
-          --ring: rgba(255, 255, 255, 0.08);
-        }
-
-        .admin-wrap {
-          min-height: 100svh;
-          background: radial-gradient(1200px 800px at 10% -20%, #1f2937 0%, transparent 50%),
-                      radial-gradient(1200px 800px at 110% 120%, #0b3b2a 0%, transparent 50%),
-                      var(--bg);
-          color: var(--text);
-          padding: 32px 16px 60px;
-          max-width: 960px;
-          margin: 0 auto;
-        }
-
-        .admin-header {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          margin-bottom: 24px;
-        }
-
-        h1 {
-          font-size: 1.75rem;
-          font-weight: 800;
-          letter-spacing: -0.02em;
-        }
-
-        .header-actions button {
-          background: transparent;
-          border: 1px solid var(--ring);
-          color: var(--text);
-          border-radius: 10px;
-          padding: 8px 14px;
-          cursor: pointer;
-        }
-        .header-actions button:hover { border-color: rgba(255,255,255,0.18); }
-
-        .stats {
-          display: grid;
-          grid-template-columns: repeat(3, 1fr);
-          gap: 12px;
-          margin-bottom: 20px;
-        }
-
-        .stat {
-          background: var(--card);
-          border: 1px solid var(--ring);
-          border-radius: 14px;
-          padding: 14px;
-        }
-        .stat-label { font-size: 0.8rem; color: var(--muted); }
-        .stat-value { font-size: 1.4rem; font-weight: 700; }
-        .stat.yes .stat-value { color: var(--yes); }
-        .stat.no .stat-value { color: var(--no); }
-
-        .muted { color: var(--muted); }
-        .error { color: #fecaca; }
-
-        .rsvp-list {
-          display: grid;
-          gap: 12px;
-          margin-top: 12px;
-        }
-
-        .rsvp {
-          list-style: none;
-          background: var(--card);
-          border: 1px solid var(--ring);
-          border-radius: 16px;
-          padding: 14px;
-        }
-        .rsvp.yes { box-shadow: 0 0 0 1px rgba(34,197,94,.15) inset; }
-        .rsvp.no  { box-shadow: 0 0 0 1px rgba(239,68,
+    </main>
+  );
+}
