@@ -89,9 +89,9 @@ export default function RSVPPage() {
           
           <div className="baby-info">
             <div className="baby-details">
-              <h3>🍼 MATTEO</h3>
-              <p>📍 Strandpaviljoen Reuring (Hoorn, NH)</p>
-              <p>📅 Zaterdag 20.09.2025</p>
+              <h3>🍼 Matteo</h3>
+              <p>📍 Oerkap (Haarlem)</p>
+              <p>Zaterdag 20.09.2025</p>
               <p>🕐 Tijd: 13:00 - 16:00</p>
             </div>
           </div>
@@ -116,18 +116,18 @@ export default function RSVPPage() {
         </div>
 
         <div className="navigation">
-          <button 
-            onClick={() => setCurrentStep('welcome')}
-            className="back-btn"
-          >
-            ← Terug
-          </button>
-          <button 
+                        <button 
             onClick={handleSubmit}
             disabled={!response || isSubmitting}
             className="continue-btn"
           >
             {isSubmitting ? 'Versturen...' : 'Verstuur ✓'}
+          </button>
+          <button 
+            onClick={() => setCurrentStep('welcome')}
+            className="back-btn"
+          >
+            ← Terug
           </button>
         </div>
       </div>
