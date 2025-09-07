@@ -152,13 +152,14 @@ export default function RSVPPage() {
           <p className="sub-text">
             {response === 'Ja' 
               ? 'We kunnen niet wachten om je te zien op het kraamfeestje! Tot dan! 💕'
-              : 'Bedankt voor je eerlijke antwoord. We zullen je missen, maar we begrijpen het! 💙'
+              : 'Bedankt voor je antwoord. Laten we snel afspreken! 💙'
             }
           </p>
           
           <div className="final-message">
             <p>Voor vragen, bel: +31653283572</p>
             <p className="signature">💕 Derck, Marie en kleine Matteo</p>
+            <p>🅿️ Gratis parkeren in de buurt van Oerkap? Navigeer Kick Smitweg Haarlem</p>
           </div>
         </div>
       </div>
